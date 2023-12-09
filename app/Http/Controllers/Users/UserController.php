@@ -11,29 +11,29 @@ class UserController extends Controller
     public function index () {
         $data = [
             [
-                'nama' => 'hani',
-                'email' => 'hanimrahayu03@gmail.com',
-                'telp' => '089530592890',
+                'nama' => 'ilman',
+                'email' => 'ilmannurhakim0@gmail.com',
+                'telp' => '08232323232',
                 'alamat' => [
-                    'street' => 'kp. cikambuy hilir',
-                    'postcode' => '40921'
+                    'street' => 'jl. dago',
+                    'postcode' => '494949'
                 ]
             ],
             [
-                'nama' => 'Eulis',
-                'email' => 'elisaa123@gmail.com',
-                'telp' => '0898789045621',
+                'nama' => 'Doni',
+                'email' => 'doni@gmail.com',
+                'telp' => '08982323',
                 'alamat' => [
                     'street' => 'jl. kopo',
                     'postcode' => '212121'
                 ]
             ],
             [
-                'nama' => 'Renda',
-                'email' => 'iyenrenda@gmail.com',
-                'telp' => '089509006952',
+                'nama' => 'Ahmad',
+                'email' => 'ahmad@gmail.com',
+                'telp' => '0862323',
                 'alamat' => [
-                    'street' => 'jl. pangauban',
+                    'street' => 'jl. buah batu',
                     'postcode' => '454545'
                 ]
             ]
