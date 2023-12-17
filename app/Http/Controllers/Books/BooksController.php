@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Books;
 
+use App\Http\Controllers\Authors\AuthorController;
 use App\Http\Controllers\Controller;
 use App\Models\Books;
 use Exception;
@@ -13,20 +14,26 @@ class BooksController extends Controller
 
         $model = new Books();
         $data = $model->select(
-            'id',
+            'books.id',
             'book_name',
-            'author',
+            'authors.author_id',
+            'authors.author_name',
             'published_at',
-        )->get()->toArray();
+        )
+        ->leftJoin('authors', 'books.author_id', '=', 'authors.author_id')
+        ->get()->toArray();
 
-        return view('books/index', compact('data'));
+        $dataAuthor = AuthorController::getAuthors();
+
+        return view('books/index', compact('data', 'dataAuthor'));
     }
 
     public function saveBook(Request $request){
         $post = $request->post();
+
         $body['id'] = $post['id'];
         $body['book_name'] = $post['book_name'];
-        $body['author'] = $post['author'];
+        $body['author_id'] = $post['author_id'];
 
         $sukses = 'Data Sukses Disimpan!';
         $gagal = 'Data Gagal Disimpan!';
@@ -53,10 +60,8 @@ class BooksController extends Controller
             if(isset($body['book_name'])){
                 $model->create($body);
                 return true;
-                // return redirect('books/index')->with('status', $sukses);
             } else {
                 return false;
-                // return redirect('books/index')->with('status', $gagal);
             }
 
         } catch (Exception $e) {
@@ -72,10 +77,8 @@ class BooksController extends Controller
             if(isset($body['book_name'])){
                 $model->where('id', $body['id'])->update($body);
                 return true;
-                // return redirect('books/index')->with('status', $sukses);
             } else {
                 return false;
-                // return redirect('books/index')->with('status', $gagal);
             }
 
         } catch (Exception $e) {
@@ -84,13 +87,14 @@ class BooksController extends Controller
     }
 
     public function deleteBook(Request $request){
+        // ambil param dari view
         $id = $request->get('id');
         try{
             $model = new Books();
             $model->find($id)->delete();
-            return redirect('books/index')->with('status', 'Delete Sukses');
+            return redirect('books/index')->with('alert', 'Delete Sukses');
         } catch(Exception $e){
-            return redirect('books/index')->with('status', 'Delete Gagal');
+            return redirect('books/index')->with('alert', 'Delete Gagal');
         }
     }
 }
