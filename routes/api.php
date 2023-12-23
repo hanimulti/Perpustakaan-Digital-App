@@ -1,4 +1,4 @@
-<?php
+<<?php
 
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\Users\UserController;

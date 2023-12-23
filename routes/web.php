@@ -38,4 +38,3 @@ Route::group(['prefix' => 'authors'], function () {
     Route::get('/index', [AuthorController::class, 'index']);
     Route::post('/save-authors', [AuthorController::class, 'saveAuthors']);
 });
-
