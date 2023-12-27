@@ -14,8 +14,17 @@ class CreateXUsers extends Migration
     public function up()
     {
         Schema::create('x_users', function (Blueprint $table) {
-            $table->id();
+            $table->string('user_id', 64)->primary();
+            $table->string('username', 50);
+            $table->string('full_name', 100);
+            $table->string('email', 100);
+            $table->string('phone_number', 15);
+            $table->string('password', 100);
+            $table->text('token')->nullable();
+            $table->boolean('is_login')->nullable();
             $table->timestamps();
+            $table->index(['user_id', 'username', 'email', 'phone_number', 'created_at']);
+
         });
     }
 
@@ -26,6 +35,6 @@ class CreateXUsers extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('x_users');
+        Schema::dropIfExists('x_user');
     }
 }

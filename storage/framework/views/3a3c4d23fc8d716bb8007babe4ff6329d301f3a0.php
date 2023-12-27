@@ -114,5 +114,4 @@
 
     </script>
 </body>
-</html>
-<?php /**PATH C:\xampp\htdocs\Submission 3\perpustakaan-digital-app-master\resources\views/books/index.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\xampp\htdocs\Submission 3\perpustakaan-digital-app-master\resources\views/books/index.blade.php ENDPATH**/ ?>
