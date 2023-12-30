@@ -1,31 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Pengunjung;
 
 use App\Helpers\ConstantsHelper;
 use App\Helpers\ResponseHelpers;
+use App\Http\Controllers\Controller;
 use App\Models\Pengunjung;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
 
-class PegawaiController extends Controller
+class PengunjungController extends Controller
 {
-    public function index()
-    {
+    public function index(){
+        $data = null;
+        $response = Http::get('http://127.0.0.1:8000/api/pegawai/get-data', []);
+        return view('pengunjung/index', compact('data'));
     }
 
-    public function getDataPengunjung(Request $request)
-    {
+    public function getPengunjung (Request $request) {
         $id = $request->get('id');
-        $nama_pegawai = $request->get('nama_pengunjung');
-        $no_telp = $request->get('no_telp');
-        $email = $request->get('email');
-        $nik = $request->get('nik');
-        $sort = $request->get('sort');
-        $isPage = $request->get('is_page');
-
         try {
             $model = new Pengunjung();
             $query = $model->select(
@@ -37,10 +31,10 @@ class PegawaiController extends Controller
                 'alamat',
                 'is_active'
             );
-            if (isset($id)) {
+            if (isset($id)){
                 $query->where('id', $id);
             }
-
+            $query->where('is_deleted', false);
             $query = $query->get();
             return ResponseHelpers::success(ConstantsHelper::STATUS_SUCCESS, ConstantsHelper::MSG_SUCCESS_GET, $query);
         } catch (\Exception $e) {
@@ -48,11 +42,9 @@ class PegawaiController extends Controller
         }
     }
 
-    public function saveDataPengunjung(Request $request)
-    {
-
+    public function savePengunjung(Request $request){
         $id = $request->post('id');
-        $nama_pegawai = $request->post('nama_pengunjung');
+        $nama_pengunjung = $request->post('nama_pengunjung');
         $no_telp = $request->post('no_telp');
         $email = $request->post('email');
         $nik = $request->post('nik');
@@ -62,10 +54,11 @@ class PegawaiController extends Controller
 
         try {
             $model = new Pengunjung();
+
             if (isset($id)) {
                 $query = $model->find($id);
                 if ($query == null) {
-                    return ResponseHelpers::error(ConstantsHelper::STATUS_ERR_VALIDATION, ConstantsHelper::MSG_ERR_SAVE, false);
+                    return ResponseHelpers::error(ConstantsHelper::STATUS_ERR_VALIDATION, ConstantsHelper::MSG_ERR_SAVE);
                 }
                 $model = $model->find($id);
             }
@@ -76,24 +69,26 @@ class PegawaiController extends Controller
             $model->tgl_lahir = $tgl_lahir;
             $model->alamat = $alamat;
             $model->is_active = $is_active;
-            if ($model->validate()->save()) {
+
+            if($model->validate()->save()){
                 return ResponseHelpers::success(ConstantsHelper::STATUS_SUCCESS, ConstantsHelper::MSG_SUCCESS_SAVE, true);
             } else {
                 return ResponseHelpers::error(ConstantsHelper::STATUS_ERR_VALIDATION, ConstantsHelper::MSG_ERR_SAVE, false);
             }
+
         } catch (\Exception $e) {
-            return ResponseHelpers::error(ConstantsHelper::STATUS_ERR_VALIDATION, ConstantsHelper::MSG_ERR_VALIDATION);
+            return ResponseHelpers::error(ConstantsHelper::STATUS_ERR_VALIDATION, ConstantsHelper::MSG_ERR_VALIDATION, $e);
         } catch (\Exception $e) {
             return ResponseHelpers::error(ConstantsHelper::STATUS_ERR_SERVER, ConstantsHelper::MSG_ERR_SERVER, $e);
         }
     }
 
-    public function deleteDataPengunjung(Request $request)
+    public function deletePengunjung(Request $request)
     {
 
         $id = $request->get('id');
-        try {
-            $model = new Pengunjung();
+        try{
+            $model =  new Pengunjung();
             if($model->find($id) == null){
                 return ResponseHelpers::error(ConstantsHelper::STATUS_ERR_VALIDATION, 'Data tidak ditemukan!', false);
             }
@@ -105,9 +100,8 @@ class PegawaiController extends Controller
                 return ResponseHelpers::error(ConstantsHelper::STATUS_ERR_VALIDATION, ConstantsHelper::MSG_ERR_DELETE, false);
             }
 
-        } catch (\Exception $e) {
+        }catch (\Exception $e) {
             return ResponseHelpers::error(ConstantsHelper::STATUS_ERR_SERVER, ConstantsHelper::MSG_ERR_SERVER, $e);
         }
-
     }
 }
